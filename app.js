@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const morgan = require('morgan');
+const {Product} = require('./model/Product');
 
 
 //connecting to database
@@ -101,6 +102,19 @@ app.post('/login',async(req,res)=>{
     }
 })
 
+//task-3 -> create a route to see all products
+app.get('/products',async(req,res)=>{
+    try{
+       const products = await Product.find({});
+       return res.status(200).json({
+        message:"find all the products",
+        products:products
+       }) 
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({message:'Internal server error'})
+    }
+})
 
 
 const PORT = 8080;
