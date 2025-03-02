@@ -169,7 +169,6 @@ app.get('/product/:id',async(req,res)=>{
 })
 
 //task-6 -> create route to update product
-//task-6 update product
 app.patch("/product/edit/:id", async (req, res) => {
     const { id } = req.params;
     const { token } = req.headers;
@@ -207,6 +206,55 @@ app.patch("/product/edit/:id", async (req, res) => {
       });
     }
   });
+
+
+  //task-7 -> create route to delete product
+  app.delete('/product/delete/:id',async(req,res)=>{
+    const {id} = req.params;
+    if(!id){
+        return res.status(400).json({message:"product id not found"})
+
+    }
+    try{
+        const deleteProduct = await Product.findByIdAndDelete(id);
+        if(!deleteProduct){
+            res.status(404).json({message:"product not found"});
+        }
+
+        res.status(200).json({message:"product deleted successfully",
+            product:deleteProduct
+        })
+
+    }catch (error) {
+      res.status(400).json({
+        message: "Internal Server Error Occured While Updating Product",
+      });
+    }
+
+  })
+
+//   task-8 -> search product
+app.get('/product/search/:keyword',async(req,res)=>{
+    const {keyword} = req.params;
+    try{
+        const products = await Product.find({
+            name:{$regex: keyword, $options:"i"}
+        });
+        if(products.length === 0){
+            return res.status(404).json({message:"No Product Found"});
+        }
+
+        return res.status(200).json({
+            message:"Product found",
+            products:products
+        })
+
+    }catch (error) {
+        res.status(400).json({
+          message: "Internal Server Error Occured While Updating Product",
+        });
+      }
+})
 
 
 
