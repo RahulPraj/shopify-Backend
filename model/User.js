@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
     token:{
         type:String,
         required:true
+    },
+    cart:{
+        type:mongoose.Schema.ObjectId,
+        ref:'Cart'
     }
 })
 
