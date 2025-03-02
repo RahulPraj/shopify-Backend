@@ -168,6 +168,31 @@ app.get('/product/:id',async(req,res)=>{
     }
 })
 
+//task-6 -> create route to update product
+app.patch('/product/edit/:id',async(req,res)=>{
+    const {id} = req.params;
+    const body = req.body.productData;
+    const{name,image,price,brand,stock,description} = req.body;
+    const {token} = req.headers;
+    const userEmail = jwt.verify(token,"supersecret");
+    try{
+        if(userEmail.email){
+            const updatedProduct = await Product.findByIdAndUpdate(id,{
+                name,
+                description,
+                image,
+                price,
+                brand,
+                stock   
+            });
+            return res.status(200).json({message:"product updated successfully"});
+        }
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({message:'Internal server error'})
+    }
+})
+
 const PORT = 8080;
 app.listen(PORT,()=>{
     console.log(`Server is connected to port ${PORT}`);
